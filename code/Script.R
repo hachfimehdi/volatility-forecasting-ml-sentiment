@@ -7,8 +7,8 @@ library(caret)
 library(glmnet)
 library(forecast)
 
-DataPeriode1 <- read_excel("C:/Users/hp/Desktop/M2 ERCF/Mémoire/Données/DataPeriode1.xlsx")
-DataPeriode2 <- read_excel("C:/Users/hp/Desktop/M2 ERCF/Mémoire/Données/DataPeriode2.xlsx")
+DataPeriode1 <- read_excel("C:/Users/hp/Desktop/M2 ERCF/MÃ©moire/DonnÃ©es/DataPeriode1.xlsx")
+DataPeriode2 <- read_excel("C:/Users/hp/Desktop/M2 ERCF/MÃ©moire/DonnÃ©es/DataPeriode2.xlsx")
 
 DataPeriode1$DividendGrowthRate=DataPeriode1$DividendGrowthRate*100
 DataPeriode1$PolicyRate=DataPeriode1$PolicyRate*100
@@ -24,160 +24,160 @@ DataPeriode2$Volatility=DataPeriode2$Volatility*100
 head(DataPeriode1)
 head(DataPeriode2)
 
-time_index1 <- 1:nrow(DataPeriode1) #nombre des mois dans la période 1
-time_index2 <- 1:nrow(DataPeriode2) #nombre des mois dans la période 2
+time_index1 <- 1:nrow(DataPeriode1) #nombre des mois dans la pÃ©riode 1
+time_index2 <- 1:nrow(DataPeriode2) #nombre des mois dans la pÃ©riode 2
 
-#Traçage du rendement
+#TraÃ§age du rendement
 dev.new()
-par(mfrow = c(2, 1))  # Diviser la fenêtre en 2 lignes, 1 colonne
+par(mfrow = c(2, 1))  # Diviser la fenÃªtre en 2 lignes, 1 colonne
 min_yield <- min(DataPeriode1$Yield, DataPeriode2$Yield)
 max_yield <- max(DataPeriode1$Yield, DataPeriode2$Yield)
 
-# Tracer la première période (1881-1990) en bleu (en haut)
+# Tracer la premiÃ¨re pÃ©riode (1881-1990) en bleu (en haut)
 plot(time_index1, DataPeriode1$Yield, type = "l", col = "blue", lwd = 2,
      xlab = "Temps", ylab = "Rendement (%)",
-     main = "Évolution du rendement (Janvier 1881 - Décembre 1990)",
+     main = "Ã‰volution du rendement (Janvier 1881 - DÃ©cembre 1990)",
      xaxt = "n",ylim = c(min_yield, max_yield))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years1 <- seq(1881, 1990, by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years1 <- seq(1881, 1990, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices1 <- seq(1, nrow(DataPeriode1), length.out = length(years1))  # Correspond aux indices
 axis(1, at = year_indices1, labels = years1)
 
-# Tracer la deuxième période (1991-2024) en bleu (en bas)
+# Tracer la deuxiÃ¨me pÃ©riode (1991-2024) en bleu (en bas)
 plot(time_index2, DataPeriode2$Yield, type = "l", col = "blue", lwd = 2,
      xlab = "Temps", ylab = "Rendement (%)",
-     main = "Évolution du rendement (Janvier 1991 - Septembre 2024)",
+     main = "Ã‰volution du rendement (Janvier 1991 - Septembre 2024)",
      xaxt = "n",ylim = c(min_yield, max_yield))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years2 <- seq(1990, 2024 , by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years2 <- seq(1990, 2024 , by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices2 <- seq(1, nrow(DataPeriode2), length.out = length(years2))  # Correspond aux indices
 axis(1, at = year_indices2, labels = years2)
 
-# Réinitialiser les paramètres de la fenêtre graphique
+# RÃ©initialiser les paramÃ¨tres de la fenÃªtre graphique
 par(mfrow = c(1, 1))
 
 
 
-#Traçage du taux d'intérêt
+#TraÃ§age du taux d'intÃ©rÃªt
 dev.new()
-par(mfrow = c(2, 1))  # Diviser la fenêtre en 2 lignes, 1 colonne
+par(mfrow = c(2, 1))  # Diviser la fenÃªtre en 2 lignes, 1 colonne
 min_InterestRate <- min(DataPeriode1$InterestRate, DataPeriode2$InterestRate)
 max_InterestRate <- max(DataPeriode1$InterestRate, DataPeriode2$InterestRate)
 
-# Tracer la première période (1881-1990) en bleu (en haut)
+# Tracer la premiÃ¨re pÃ©riode (1881-1990) en bleu (en haut)
 plot(time_index1, DataPeriode1$InterestRate, type = "l", col = "blue", lwd = 2,
-     xlab = "Temps", ylab = "Taux d'intérêt (%)",
-     main = "Évolution du taux d'intérêt (Janvier 1881 - Décembre 1990)",
+     xlab = "Temps", ylab = "Taux d'intÃ©rÃªt (%)",
+     main = "Ã‰volution du taux d'intÃ©rÃªt (Janvier 1881 - DÃ©cembre 1990)",
      xaxt = "n",ylim = c(min_InterestRate, max_InterestRate))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years1 <- seq(1881, 1990, by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years1 <- seq(1881, 1990, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices1 <- seq(1, nrow(DataPeriode1), length.out = length(years1))  # Correspond aux indices
 axis(1, at = year_indices1, labels = years1)
 
-# Tracer la deuxième période (1991-2024) en bleu (en bas)
+# Tracer la deuxiÃ¨me pÃ©riode (1991-2024) en bleu (en bas)
 plot(time_index2, DataPeriode2$InterestRate, type = "l", col = "blue", lwd = 2,
-     xlab = "Temps", ylab = "Taux d'intérêt (%)",
-     main = "Évolution du taux d'intérêt (Janvier 1991 - Septembre 2024)",
+     xlab = "Temps", ylab = "Taux d'intÃ©rÃªt (%)",
+     main = "Ã‰volution du taux d'intÃ©rÃªt (Janvier 1991 - Septembre 2024)",
      xaxt = "n",ylim = c(min_InterestRate, max_InterestRate))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years2 <- seq(1990, 2024 , by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years2 <- seq(1990, 2024 , by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices2 <- seq(1, nrow(DataPeriode2), length.out = length(years2))  # Correspond aux indices
 axis(1, at = year_indices2, labels = years2)
 
-# Réinitialiser les paramètres de la fenêtre graphique
+# RÃ©initialiser les paramÃ¨tres de la fenÃªtre graphique
 par(mfrow = c(1, 1))
 
 
 
-#Traçage du taux directeur
+#TraÃ§age du taux directeur
 dev.new()
-par(mfrow = c(2, 1))  # Diviser la fenêtre en 2 lignes, 1 colonne
+par(mfrow = c(2, 1))  # Diviser la fenÃªtre en 2 lignes, 1 colonne
 min_PolicyRate <- min(DataPeriode1$PolicyRate, DataPeriode2$PolicyRate)
 max_PolicyRate <- max(DataPeriode1$PolicyRate, DataPeriode2$PolicyRate)
 
-# Tracer la première période (1881-1990) en bleu (en haut)
+# Tracer la premiÃ¨re pÃ©riode (1881-1990) en bleu (en haut)
 plot(time_index1, DataPeriode1$PolicyRate, type = "l", col = "blue", lwd = 2,
      xlab = "Temps", ylab = "Taux directeur (%)",
-     main = "Évolution du taux directeur (Janvier 1881 - Décembre 1990)",
+     main = "Ã‰volution du taux directeur (Janvier 1881 - DÃ©cembre 1990)",
      xaxt = "n",ylim = c(min_PolicyRate, max_PolicyRate))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years1 <- seq(1881, 1990, by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years1 <- seq(1881, 1990, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices1 <- seq(1, nrow(DataPeriode1), length.out = length(years1))  # Correspond aux indices
 axis(1, at = year_indices1, labels = years1)
 
-# Tracer la deuxième période (1991-2024) en bleu (en bas)
+# Tracer la deuxiÃ¨me pÃ©riode (1991-2024) en bleu (en bas)
 plot(time_index2, DataPeriode2$PolicyRate, type = "l", col = "blue", lwd = 2,
      xlab = "Temps", ylab = "Taux directeur (%)",
-     main = "Évolution du taux directeur (Janvier 1991 - Septembre 2024)",
+     main = "Ã‰volution du taux directeur (Janvier 1991 - Septembre 2024)",
      xaxt = "n",ylim = c(min_PolicyRate, max_PolicyRate))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years2 <- seq(1990, 2024 , by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years2 <- seq(1990, 2024 , by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices2 <- seq(1, nrow(DataPeriode2), length.out = length(years2))  # Correspond aux indices
 axis(1, at = year_indices2, labels = years2)
 
-# Réinitialiser les paramètres de la fenêtre graphique
+# RÃ©initialiser les paramÃ¨tres de la fenÃªtre graphique
 par(mfrow = c(1, 1))
 
 
 
-#Traçage du taux de croissance de dividende
+#TraÃ§age du taux de croissance de dividende
 dev.new()
-par(mfrow = c(2, 1))  # Diviser la fenêtre en 2 lignes, 1 colonne
+par(mfrow = c(2, 1))  # Diviser la fenÃªtre en 2 lignes, 1 colonne
 min_DividendGrowthRate <- min(DataPeriode1$DividendGrowthRate, DataPeriode2$DividendGrowthRate)
 max_DividendGrowthRate <- max(DataPeriode1$DividendGrowthRate, DataPeriode2$DividendGrowthRate)
 
-# Tracer la première période (1881-1990) en bleu (en haut)
+# Tracer la premiÃ¨re pÃ©riode (1881-1990) en bleu (en haut)
 plot(time_index1, DataPeriode1$DividendGrowthRate, type = "l", col = "blue", lwd = 2,
      xlab = "Temps", ylab = "Taux de croissance de dividende (%)",
-     main = "Évolution du taux de croissance de dividende 
-     (Janvier 1881 - Décembre 1990)",
+     main = "Ã‰volution du taux de croissance de dividende 
+     (Janvier 1881 - DÃ©cembre 1990)",
      xaxt = "n",ylim = c(min_DividendGrowthRate, max_DividendGrowthRate))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years1 <- seq(1881, 1990, by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years1 <- seq(1881, 1990, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices1 <- seq(1, nrow(DataPeriode1), length.out = length(years1))  # Correspond aux indices
 axis(1, at = year_indices1, labels = years1)
 
-# Tracer la deuxième période (1991-2024) en bleu (en bas)
+# Tracer la deuxiÃ¨me pÃ©riode (1991-2024) en bleu (en bas)
 plot(time_index2, DataPeriode2$DividendGrowthRate, type = "l", col = "blue", lwd = 2,
      xlab = "Temps", ylab = "Taux de croissance de dividende (%)",
-     main = "Évolution du taux de croissance de dividende 
+     main = "Ã‰volution du taux de croissance de dividende 
      (Janvier 1991 - Septembre 2024)",
      xaxt = "n",ylim = c(min_DividendGrowthRate, max_DividendGrowthRate))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years2 <- seq(1990, 2024 , by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years2 <- seq(1990, 2024 , by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices2 <- seq(1, nrow(DataPeriode2), length.out = length(years2))  # Correspond aux indices
 axis(1, at = year_indices2, labels = years2)
 
-# Réinitialiser les paramètres de la fenêtre graphique
+# RÃ©initialiser les paramÃ¨tres de la fenÃªtre graphique
 par(mfrow = c(1, 1))
 
 
 
-#Traçage volatilité
+#TraÃ§age volatilitÃ©
 dev.new()
-par(mfrow = c(2, 1))  # Diviser la fenêtre en 2 lignes, 1 colonne
+par(mfrow = c(2, 1))  # Diviser la fenÃªtre en 2 lignes, 1 colonne
 min_Volatility <- min(DataPeriode1$Volatility, DataPeriode2$Volatility)
 max_Volatility <- max(DataPeriode1$Volatility, DataPeriode2$Volatility)
 
-# Tracer la première période (1881-1990) en bleu (en haut)
+# Tracer la premiÃ¨re pÃ©riode (1881-1990) en bleu (en haut)
 plot(time_index1, DataPeriode1$Volatility, type = "l", col = "blue", lwd = 2,
-     xlab = "Temps", ylab = "Volatilité (%)",
-     main = "Évolution de la volatilité 
-     (Janvier 1881 - Décembre 1990)",
+     xlab = "Temps", ylab = "VolatilitÃ© (%)",
+     main = "Ã‰volution de la volatilitÃ© 
+     (Janvier 1881 - DÃ©cembre 1990)",
      xaxt = "n",ylim = c(min_Volatility, max_Volatility))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years1 <- seq(1881, 1990, by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years1 <- seq(1881, 1990, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices1 <- seq(1, nrow(DataPeriode1), length.out = length(years1))  # Correspond aux indices
 axis(1, at = year_indices1, labels = years1)
 
-# Tracer la deuxième période (1991-2024) en bleu (en bas)
+# Tracer la deuxiÃ¨me pÃ©riode (1991-2024) en bleu (en bas)
 plot(time_index2, DataPeriode2$Volatility, type = "l", col = "blue", lwd = 2,
-     xlab = "Temps", ylab = "Volatilité (%)",
-     main = "Évolution de la volatilité 
+     xlab = "Temps", ylab = "VolatilitÃ© (%)",
+     main = "Ã‰volution de la volatilitÃ© 
      (Janvier 1991 - Septembre 2024)",
      xaxt = "n",ylim = c(min_Volatility, max_Volatility))  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years2 <- seq(1990, 2024 , by = 10)  # Générer des années tous les 20 ans
+# Ajouter des labels temporels (annÃ©es)
+years2 <- seq(1990, 2024 , by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 20 ans
 year_indices2 <- seq(1, nrow(DataPeriode2), length.out = length(years2))  # Correspond aux indices
 axis(1, at = year_indices2, labels = years2)
 par(mfrow = c(1, 1))
@@ -186,24 +186,24 @@ par(mfrow = c(1, 1))
 
 dataset1=subset(DataPeriode1,select=-c(1)) #enlever la colonne DATE
 dataset2=subset(DataPeriode2,select=-c(1)) #enlever la colonne DATE
-#matrice de corrélation
+#matrice de corrÃ©lation
 install.packages("corrplot")
 library(corrplot) 
-# Calculer les matrices de corrélation et les convertir en pourcentage
+# Calculer les matrices de corrÃ©lation et les convertir en pourcentage
 correlation_matrix1 <- cor(dataset1, use = "complete.obs", method = "pearson") 
 correlation_matrix2 <- cor(dataset2, use = "complete.obs", method = "pearson") 
 
 dev.new()
 par(mfrow = c(2, 1))
 
-# Premier graphique pour la première période
+# Premier graphique pour la premiÃ¨re pÃ©riode
 corrplot(correlation_matrix1, 
          method = "number", type = "upper",addCoef.col = "black", tl.col = "black",
          number.cex = 0.9, cl.pos = "n", col = colorRampPalette(c("black"))(200))
-title("Janvier 1881 - Décembre 1990                                                                     ",
+title("Janvier 1881 - DÃ©cembre 1990                                                                     ",
       line = 1.2)
 
-# Deuxième graphique pour la deuxième période
+# DeuxiÃ¨me graphique pour la deuxiÃ¨me pÃ©riode
 corrplot(correlation_matrix2, 
          method = "number", type = "upper", addCoef.col = "black",tl.col = "black",
          number.cex = 0.9, cl.pos = "n", col = colorRampPalette(c("black"))(200))
@@ -213,109 +213,109 @@ par(mfrow = c(1, 1))
 
 
 ts.plot(dataset1)
-volatilite1 <- dataset1[, 5] #prendre seulement la colonne Volatilité
+volatilite1 <- dataset1[, 5] #prendre seulement la colonne VolatilitÃ©
 ts.plot(dataset2)
-volatilite2 <- dataset2[, 5] #prendre seulement la colonne Volatilité
+volatilite2 <- dataset2[, 5] #prendre seulement la colonne VolatilitÃ©
 # Tracer le graphe de l'ACF
 dev.new()
 par(mfrow = c(2, 1))
-acf(volatilite1, main = "ACF de la Volatilité 1881-1990", lag.max = 100)
-acf(volatilite2, main = "ACF de la Volatilité 1991-2024", lag.max = 100)
+acf(volatilite1, main = "ACF de la VolatilitÃ© 1881-1990", lag.max = 100)
+acf(volatilite2, main = "ACF de la VolatilitÃ© 1991-2024", lag.max = 100)
 par(mfrow = c(1, 1))
 
 # Tracer le graphe de la PACF
 dev.new()
 par(mfrow = c(2, 1))
-pacf(volatilite1, main = "PACF de la Volatilité 1881-1990", lag.max = 100)
-pacf(volatilite2, main = "PACF de la Volatilité 1991-2024", lag.max = 100)
+pacf(volatilite1, main = "PACF de la VolatilitÃ© 1881-1990", lag.max = 100)
+pacf(volatilite2, main = "PACF de la VolatilitÃ© 1991-2024", lag.max = 100)
 par(mfrow = c(1, 1))
 
-#pour rendre la volatilité stationnaire, on fait la dérivé premier
+#pour rendre la volatilitÃ© stationnaire, on fait la dÃ©rivÃ© premier
 dataset1dif1=diff(DataPeriode1$Volatility) #periode 1
 dataset2dif1=diff(DataPeriode2$Volatility) #periode 2
 time_index1d1 <- 1:(nrow(DataPeriode1)-1)
 time_index2d1 <- 1:(nrow(DataPeriode2)-1)
-# Tracer la volatilitéd1 en fonction du temps
+# Tracer la volatilitÃ©d1 en fonction du temps
 dev.new()
 par(mfrow = c(2, 1))
 #periode 1
 plot(time_index1d1, dataset1dif1, type = "l", col = "blue", lwd = 2,
-     xlab = "Temps", ylab = "Dérivé Volatilité",
-     main = "dérivé volatilité (Janvier 1881 - Décembre 1990)",
+     xlab = "Temps", ylab = "DÃ©rivÃ© VolatilitÃ©",
+     main = "dÃ©rivÃ© volatilitÃ© (Janvier 1881 - DÃ©cembre 1990)",
      xaxt = "n")  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years1 <- seq(1881, 1990, by = 10)  # Générer des années tous les 10 ans
+# Ajouter des labels temporels (annÃ©es)
+years1 <- seq(1881, 1990, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 10 ans
 year_indices1 <- seq(1, nrow(DataPeriode1), length.out = length(years))  # Correspond aux indices
 axis(1, at = year_indices, labels = years1)
 #periode 2
 plot(time_index2d1, dataset2dif1, type = "l", col = "blue", lwd = 2,
-     xlab = "Temps", ylab = "Dérivé Volatilité",
-     main = "dérivé volatilité (Janvier 1991 - Séptembre 2024)",
+     xlab = "Temps", ylab = "DÃ©rivÃ© VolatilitÃ©",
+     main = "dÃ©rivÃ© volatilitÃ© (Janvier 1991 - SÃ©ptembre 2024)",
      xaxt = "n")  # Supprime les ticks de l'axe X pour personnaliser
-# Ajouter des labels temporels (années)
-years2 <- seq(1991, 2024, by = 10)  # Générer des années tous les 10 ans
+# Ajouter des labels temporels (annÃ©es)
+years2 <- seq(1991, 2024, by = 10)  # GÃ©nÃ©rer des annÃ©es tous les 10 ans
 year_indices2 <- seq(1, nrow(DataPeriode2), length.out = length(years))  # Correspond aux indices
 axis(1, at = year_indices, labels = years2)
 par(mfrow = c(1, 1))
 
 
 
-# Tracer le graphe de l'ACF volatilitéd1
+# Tracer le graphe de l'ACF volatilitÃ©d1
 dev.new()
 par(mfrow = c(2, 1))
 #periode 1
-acf(dataset1dif1, main = "ACF de la Volatilité 1881-1990", lag.max = 40)
+acf(dataset1dif1, main = "ACF de la VolatilitÃ© 1881-1990", lag.max = 40)
 #periode 2
-acf(dataset2dif1, main = "ACF de la Volatilité 1990-2024", lag.max = 40)
+acf(dataset2dif1, main = "ACF de la VolatilitÃ© 1990-2024", lag.max = 40)
 par(mfrow = c(1, 1))
 
-# Tracer le graphe de l'PACF volatilitéd1 
+# Tracer le graphe de l'PACF volatilitÃ©d1 
 dev.new()
 par(mfrow = c(2, 1))
-pacf(dataset1dif1, main = "PACF de la Volatilité 1881-1990", lag.max = 40)
-pacf(dataset2dif1, main = "PACF de la Volatilité 1991-2024", lag.max = 40)
+pacf(dataset1dif1, main = "PACF de la VolatilitÃ© 1881-1990", lag.max = 40)
+pacf(dataset2dif1, main = "PACF de la VolatilitÃ© 1991-2024", lag.max = 40)
 par(mfrow = c(1, 1))
 
-#diviser les données en train et test (aléatoire)
+#diviser les donnÃ©es en train et test (alÃ©atoire)
 install.packages("caret")
 install.packages("pillar")
 library(caret)
-# Créer les indices de partitionnement
+# CrÃ©er les indices de partitionnement
 train_indexes1 <- createDataPartition(dataset1dif1, p = 0.8, list = FALSE)
 train_indexes2 <- createDataPartition(dataset2dif1, p = 0.8, list = FALSE)
-# Créer les ensembles d'entraînement et de test
+# CrÃ©er les ensembles d'entraÃ®nement et de test
 train1 <- dataset1dif1[train_indexes1]
 test1 <- dataset1dif1[-train_indexes1]
 train2 <- dataset2dif1[train_indexes2]
 test2 <- dataset2dif1[-train_indexes2]
 
-#modèle arima
+#modÃ¨le arima
 #periode 1
 modelARIMA1=arima(train1,order=c(1,1,2))
 modelARIMA2=arima(train2,order=c(0,1,1))
 install.packages("forecast")
 library(forecast)
-# validation du modèle ARIMA1
-# analyse des résidus
+# validation du modÃ¨le ARIMA1
+# analyse des rÃ©sidus
 dev.new()
 checkresiduals(modelARIMA1) 
 residualsARIMA1=residuals(modelARIMA1)
 plot(residualsARIMA1)
 modelARIMA1 
-# Tester la capacité de prédiction
+# Tester la capacitÃ© de prÃ©diction
 fcARIMA1=forecast(modelARIMA1,263)
 errorsARIMA1 <- test1 - fcARIMA1$mean
 mseARIMA1 <- mean(errorsARIMA1^2)  # Mean Squared Error
 rmseARIMA1 <- sqrt(mseARIMA1)      # Root Mean Squared Error
 
-# validation du modèle ARIMA2
-# analyse des résidus
+# validation du modÃ¨le ARIMA2
+# analyse des rÃ©sidus
 dev.new()
 checkresiduals(modelARIMA2) 
 residualsARIMA2=residuals(modelARIMA2)
 plot(residualsARIMA2)
 modelARIMA2
-# Tester la capacité de prédiction
+# Tester la capacitÃ© de prÃ©diction
 fcARIMA2=forecast(modelARIMA2,80)
 errorsARIMA2 <- test2 - fcARIMA2$mean
 mseARIMA2 <- mean(errorsARIMA2^2)  # Mean Squared Error
@@ -323,12 +323,12 @@ rmseARIMA2 <- sqrt(mseARIMA2)      # Root Mean Squared Error
 
 
 
-#Modèle GARCH
+#ModÃ¨le GARCH
 install.packages("FinTS")
 
 ArchTest(residualsARIMA1)
 ArchTest(residualsARIMA2)
-#déterminer p et q de GARCH
+#dÃ©terminer p et q de GARCH
 #ACF
 dev.new()
 par(mfrow = c(2, 1))
@@ -344,7 +344,7 @@ par(mfrow = c(1, 1))
 
 install.packages("rugarch")  # Installer le package 
 library(rugarch)             # Charger le package
-#modèle
+#modÃ¨le
 spec1 <- ugarchspec(
   variance.model = list(model = "eGARCH", garchOrder = c(1, 1)),
   mean.model = list(armaOrder = c(1, 2), include.mean = TRUE),
@@ -355,32 +355,32 @@ spec2 <- ugarchspec(
   distribution.model = "norm")
 
 
-# Ajuster le modèle ARIMA-EGARCH1
+# Ajuster le modÃ¨le ARIMA-EGARCH1
 model_ARIMA1egarch <- ugarchfit(spec = spec1, data = dataset1dif1)
-summary(model_ARIMA1egarch)  # Résumé des résultats du modèle
+summary(model_ARIMA1egarch)  # RÃ©sumÃ© des rÃ©sultats du modÃ¨le
 coef(model_ARIMA1egarch)
-# Afficher un résumé détaillé
+# Afficher un rÃ©sumÃ© dÃ©taillÃ©
 show(model_ARIMA1egarch)
 
-# Ajuster le modèle ARIMA-EGARCH2
+# Ajuster le modÃ¨le ARIMA-EGARCH2
 model_ARIMA2egarch <- ugarchfit(spec = spec2, data = dataset2dif1)
-summary(model_ARIMA2egarch)  # Résumé des résultats du modèle
+summary(model_ARIMA2egarch)  # RÃ©sumÃ© des rÃ©sultats du modÃ¨le
 coef(model_ARIMA2egarch)
 
 show(model_ARIMA2egarch)
 
 
 
-# Prévoir avec le modèle EGARCH
+# PrÃ©voir avec le modÃ¨le EGARCH
 #periode 1
-fcARIMA_EGARCH1 <- ugarchforecast(model_ARIMA1egarch, n.ahead = length(test1))  # Prévisions pour les données de test
+fcARIMA_EGARCH1 <- ugarchforecast(model_ARIMA1egarch, n.ahead = length(test1))  # PrÃ©visions pour les donnÃ©es de test
 fc_mean_ARIMAEGARCH1 <- fitted(fcARIMA_EGARCH1)
 #periode 2
-fcARIMA_EGARCH2 <- ugarchforecast(model_ARIMA2egarch, n.ahead = length(test2))  # Prévisions pour les données de test
+fcARIMA_EGARCH2 <- ugarchforecast(model_ARIMA2egarch, n.ahead = length(test2))  # PrÃ©visions pour les donnÃ©es de test
 fc_mean_ARIMAEGARCH2 <- fitted(fcARIMA_EGARCH2)
 
 
-#validation du modèle
+#validation du modÃ¨le
 #periode1
 errorsARIMAEGARCH1 <- test1 - fc_mean_ARIMAEGARCH1
 mseARIMAEGARCH1 <- mean(errorsARIMAEGARCH1^2)  # Mean Squared Error
@@ -408,7 +408,7 @@ TrainIndexML2=createDataPartition(data2dif1$Volatility,p=0.8,list=FALSE)
 trainML2=data2dif1[TrainIndexML2,]
 testML2=data2dif1[-TrainIndexML2,]
 
-#enlever la colonne volatilité (pour que le modèle ne prend pas les valeur reelles de la volatilité)
+#enlever la colonne volatilitÃ© (pour que le modÃ¨le ne prend pas les valeur reelles de la volatilitÃ©)
 x_train1=scale(subset(trainML1,select=-c(5)))
 y_train1=trainML1$Volatility
 x_test1=scale(subset(testML1,select=-c(5)))
@@ -603,7 +603,7 @@ install.packages("neuralnet")
 
 library(neuralnet)
 
-# Normalisation des données (Min-Max Scaling)
+# Normalisation des donnÃ©es (Min-Max Scaling)
 normalize <- function(x) {
   return((x - min(x)) / (max(x) - min(x)))
 }
@@ -614,11 +614,11 @@ testML1_norm <- as.data.frame(lapply(testML1, normalize))
 trainML2_norm <- as.data.frame(lapply(trainML2, normalize))
 testML2_norm <- as.data.frame(lapply(testML2, normalize))
 
-#une seule couche cachée
+#une seule couche cachÃ©e
 dfNN1 = data.frame(NbrNeurones = rep(0, 12), mseNN1 = rep(0, 12))
 dfNN2 = data.frame(NbrNeurones = rep(0, 12), mseNN2 = rep(0, 12))
 for(i in 1:12){
-  set.seed(432)  # Assurer la reproductibilité
+  set.seed(432)  # Assurer la reproductibilitÃ©
   
   modelNN1 = neuralnet(Volatility ~ DividendGrowthRate + PolicyRate + InterestRate + Yield,
                        data = trainML1_norm, hidden = i, linear.output = TRUE)
@@ -626,11 +626,11 @@ for(i in 1:12){
   modelNN2 = neuralnet(Volatility ~ DividendGrowthRate + PolicyRate + InterestRate + Yield,
                        data = trainML2_norm, hidden = i, linear.output = TRUE)
   
-  # Prédictions
+  # PrÃ©dictions
   predNN1 = compute(modelNN1, testML1_norm[, c("DividendGrowthRate", "PolicyRate", "InterestRate", "Yield")])$net.result
   predNN2 = compute(modelNN2, testML2_norm[, c("DividendGrowthRate", "PolicyRate", "InterestRate", "Yield")])$net.result
   
-  # Dénormalisation des prédictions
+  # DÃ©normalisation des prÃ©dictions
   minV1 = min(trainML1$Volatility)
   maxV1 = max(trainML1$Volatility)
   predNN1 = predNN1 * (maxV1 - minV1) + minV1
@@ -643,7 +643,7 @@ for(i in 1:12){
   mse1 = mean((testML1$Volatility - predNN1)^2)
   mse2 = mean((testML2$Volatility - predNN2)^2)
   
-  # Stocker les résultats
+  # Stocker les rÃ©sultats
   dfNN1$NbrNeurones[i] = i
   dfNN1$mseNN1[i] = mse1
   dfNN2$NbrNeurones[i] = i
@@ -652,14 +652,14 @@ for(i in 1:12){
 dev.new()
 par(mfrow = c(2, 1))
 plot(dfNN1$NbrNeurones, dfNN1$mseNN1, type = "b", col = "blue", pch = 19,
-     xlab = "Nombre de neurones cachés", ylab = "MSE",
-     main = "MSE en fonction du nombre de neurones cachés
+     xlab = "Nombre de neurones cachÃ©s", ylab = "MSE",
+     main = "MSE en fonction du nombre de neurones cachÃ©s
             1881-1990", xaxt = "n")
 axis(1, at = dfNN1$NbrNeurones, labels = dfNN1$NbrNeurones)
 
 plot(dfNN2$NbrNeurones, dfNN2$mseNN2, type = "b", col = "blue", pch = 19,
-     xlab = "Nombre de neurones cachés", ylab = "MSE",
-     main = "MSE en fonction du nombre de neurones cachés
+     xlab = "Nombre de neurones cachÃ©s", ylab = "MSE",
+     main = "MSE en fonction du nombre de neurones cachÃ©s
             1991-2024", xaxt = "n")
 axis(1, at = dfNN2$NbrNeurones, labels = dfNN2$NbrNeurones)
 par(mfrow = c(1, 1))
@@ -692,12 +692,12 @@ erreursNN2=testML2$Volatility - predNN2
 
 
 
-#deux couches cachées
+#deux couches cachÃ©es
 dfNN11 <- data.frame(NbrNeurones1 = integer(), NbrNeurones2 = integer(), mseNN1 = numeric())
 dfNN22 <- data.frame(NbrNeurones1 = integer(), NbrNeurones2 = integer(), mseNN2 = numeric())
 
-for(i in 1:6){  # Première couche cachée : 1 à 6 neurones
-  for(j in 1:6){  # Deuxième couche cachée : 1 à 6 neurones
+for(i in 1:6){  # PremiÃ¨re couche cachÃ©e : 1 Ã  6 neurones
+  for(j in 1:6){  # DeuxiÃ¨me couche cachÃ©e : 1 Ã  6 neurones
     set.seed(242)  
     
     modelNN11 = neuralnet(Volatility ~ DividendGrowthRate + PolicyRate + InterestRate + Yield,
@@ -705,11 +705,11 @@ for(i in 1:6){  # Première couche cachée : 1 à 6 neurones
     modelNN22 = neuralnet(Volatility ~ DividendGrowthRate + PolicyRate + InterestRate + Yield,
                          data = trainML2_norm, hidden = c(i, j), linear.output = TRUE)
     
-    # Prédictions
+    # PrÃ©dictions
     predNN11 = compute(modelNN11, testML1_norm[, c("DividendGrowthRate", "PolicyRate", "InterestRate", "Yield")])$net.result
     predNN22 = compute(modelNN22, testML2_norm[, c("DividendGrowthRate", "PolicyRate", "InterestRate", "Yield")])$net.result
     
-    # Dénormalisation des prédictions
+    # DÃ©normalisation des prÃ©dictions
     minV11 = min(trainML1$Volatility)
     maxV11 = max(trainML1$Volatility)
     predNN11 = predNN11 * (maxV11 - minV11) + minV11
@@ -722,33 +722,33 @@ for(i in 1:6){  # Première couche cachée : 1 à 6 neurones
     mse1 = mean((testML1$Volatility - predNN11)^2)
     mse2 = mean((testML2$Volatility - predNN22)^2)
     
-    # Stocker les résultats
+    # Stocker les rÃ©sultats
     dfNN11[nrow(dfNN11) + 1, ] <- c(i, j, mse1)
     dfNN22[nrow(dfNN22) + 1, ] <- c(i, j, mse2)
   }
 }
 
-# Créer une nouvelle variable combinée pour les étiquettes de l'axe X
+# CrÃ©er une nouvelle variable combinÃ©e pour les Ã©tiquettes de l'axe X
 dfNN11$CombinedLabels <- paste("(", dfNN11$NbrNeurones1, ",", dfNN11$NbrNeurones2, ")")
 dfNN22$CombinedLabels <- paste("(", dfNN22$NbrNeurones1, ",", dfNN22$NbrNeurones2, ")")
 
 dev.new()
 par(mfrow = c(2, 1))
-# Tracer le graphique en utilisant les étiquettes combinées
+# Tracer le graphique en utilisant les Ã©tiquettes combinÃ©es
 plot(dfNN11$NbrNeurones1, dfNN11$mseNN1, type = "b", col = "blue", pch = 19,
-     xlab = "Couches cachées", ylab = "MSE",
-     main = "MSE en fonction du nombre de neurones cachés
+     xlab = "Couches cachÃ©es", ylab = "MSE",
+     main = "MSE en fonction du nombre de neurones cachÃ©s
         1881-1990", xaxt = "n")
 
-# Personnaliser les étiquettes de l'axe X
+# Personnaliser les Ã©tiquettes de l'axe X
 axis(1, at = dfNN11$NbrNeurones1, labels = dfNN11$CombinedLabels)
 
 plot(dfNN22$NbrNeurones1, dfNN22$mseNN2, type = "b", col = "blue", pch = 19,
-     xlab = "Couches cachées", ylab = "MSE",
-     main = "MSE en fonction du nombre de neurones cachés
+     xlab = "Couches cachÃ©es", ylab = "MSE",
+     main = "MSE en fonction du nombre de neurones cachÃ©s
         1991-2024", xaxt = "n")
 
-# Personnaliser les étiquettes de l'axe X
+# Personnaliser les Ã©tiquettes de l'axe X
 axis(1, at = dfNN22$NbrNeurones1, labels = dfNN22$CombinedLabels)
 
 par(mfrow = c(1, 1))
@@ -779,13 +779,13 @@ erreursNN22=testML2$Volatility - predNN22
 
 dev.new()
 plot(testML2$Volatility, type = "o", col = "blue", xlab = "Index", ylab = "Valeurs",
-     main = "Valeurs Réelles vs Prédites", pch = 16)
+     main = "Valeurs RÃ©elles vs PrÃ©dites", pch = 16)
 
-# Ajouter les valeurs prédites
+# Ajouter les valeurs prÃ©dites
 lines(predNN2, type = "o", col = "red", pch = 16)
 
-# Ajouter une légende
-legend("topleft", legend = c("Valeurs Réelles", "Valeurs Prédites"),
+# Ajouter une lÃ©gende
+legend("topleft", legend = c("Valeurs RÃ©elles", "Valeurs PrÃ©dites"),
        col = c("blue", "red"), lty = 1, pch = 16)
 
 
@@ -794,13 +794,13 @@ legend("topleft", legend = c("Valeurs Réelles", "Valeurs Prédites"),
 
 
 # Comparaison
-erreursP1 <- data.frame(Modèles=rep(0,2),MSE1 = rep(0, 2), RMSE1 = rep(0, 2),
+erreursP1 <- data.frame(ModÃ¨les=rep(0,2),MSE1 = rep(0, 2), RMSE1 = rep(0, 2),
                       MSE2 = rep(0, 2), RMSE2 = rep(0, 2))
 erreursP1[1, ] <- c("ARIMA", mseARIMA1/10000,rmseARIMA1/10000,mseARIMA2/10000,rmseARIMA2/10000)
 erreursP1[2, ] <- c("ARIMA-EGARCH", mseARIMAEGARCH1/10000,rmseARIMAEGARCH1/10000,mseARIMAEGARCH2/10000,rmseARIMAEGARCH2/10000)
 
 
-erreursP2 <- data.frame(Modèles=rep(0,5),MSE1 = rep(0, 5), RMSE1 = rep(0, 5),
+erreursP2 <- data.frame(ModÃ¨les=rep(0,5),MSE1 = rep(0, 5), RMSE1 = rep(0, 5),
                         MSE2 = rep(0, 5), RMSE2 = rep(0, 5))
 erreursP2[1, ] <- c("Ridge", mseRidge1/10000,rmseRidge1/10000,mseRidge2/10000,rmseRidge2/10000)
 erreursP2[2, ] <- c("Lasso", mseLasso1/10000,rmseLasso1/10000,mseLasso2/10000,rmseLasso2/10000)
@@ -808,7 +808,7 @@ erreursP2[3, ] <- c("ElasticNet", mseElasticNet1/10000,rmseElasticNet1/10000,mse
 erreursP2[4, ] <- c("NN1", dfNN1$mseNN1[1]/10000,sqrt(dfNN1$mseNN1[1])/10000,dfNN2$mseNN2[1]/10000,sqrt(dfNN2$mseNN2[1])/10000)
 erreursP2[5, ] <- c("NN2", dfNN11$mseNN1[1]/10000,sqrt(dfNN11$mseNN1[1])/10000,dfNN22$mseNN2[1]/10000,sqrt(dfNN22$mseNN2[1])/10000)
 
-erreurs <- data.frame(Modèles=rep(0,7),MSE1 = rep(0, 7), RMSE1 = rep(0, 7),
+erreurs <- data.frame(ModÃ¨les=rep(0,7),MSE1 = rep(0, 7), RMSE1 = rep(0, 7),
                       MSE2 = rep(0, 7), RMSE2 = rep(0, 7))
 erreurs[1, ] <- c("ARIMA", mseARIMA1/10000,rmseARIMA1/10000,mseARIMA2/10000,rmseARIMA2/10000)
 erreurs[2, ] <- c("ARIMA-EGARCH", mseARIMAEGARCH1/10000,rmseARIMAEGARCH1/10000,mseARIMAEGARCH2/10000,rmseARIMAEGARCH2/10000)
@@ -843,10 +843,10 @@ mat_erreurs1 <- as.matrix(EcartReelPrediction1)
 # Tracer toutes les courbes d'erreurs
 dev.new()
 matplot(mat_erreurs1, type = "l", lty = 1, col = 1:ncol(mat_erreurs1),
-        xlab = "Temps", ylab = "Erreur Normalisée", 
-        main = "Comparaison des erreurs des modèles")
+        xlab = "Temps", ylab = "Erreur NormalisÃ©e", 
+        main = "Comparaison des erreurs des modÃ¨les")
 
-# Ajouter la légende
+# Ajouter la lÃ©gende
 legend("topright", legend = colnames(mat_erreurs1), col = 1:ncol(mat_erreurs1), 
        lty = 1, cex = 0.8)
 
@@ -868,15 +868,15 @@ mat_erreurs2 <- as.matrix(EcartReelPrediction2)
 # Tracer toutes les courbes d'erreurs
 dev.new()
 matplot(mat_erreurs2, type = "l", lty = 1, col = 1:ncol(mat_erreurs2),
-        xlab = "Temps", ylab = "Erreur Normalisée", 
-        main = "Comparaison des erreurs des modèles")
+        xlab = "Temps", ylab = "Erreur NormalisÃ©e", 
+        main = "Comparaison des erreurs des modÃ¨les")
 
-# Ajouter la légende
+# Ajouter la lÃ©gende
 legend("topright", legend = colnames(mat_erreurs2), col = 1:ncol(mat_erreurs2), 
        lty = 1, cex = 0.8)
 
 
-#DM TEST période 1
+#DM TEST pÃ©riode 1
 modeles1 <- colnames(EcartReelPrediction1)
 
 # Initialisation de la matrice des p-values du test Diebold-Mariano
@@ -884,14 +884,14 @@ dm_matrix1 <- matrix(NA, nrow = length(modeles1), ncol = length(modeles1))
 rownames(dm_matrix1) <- modeles1
 colnames(dm_matrix1) <- modeles1
 
-# Boucles pour comparer chaque modèle avec les autres
+# Boucles pour comparer chaque modÃ¨le avec les autres
 for (i in 1:(length(modeles1) - 1)) {
   for (j in (i + 1):length(modeles1)) {
-    # les erreurs de chaque modèle
+    # les erreurs de chaque modÃ¨le
     erreur1 <- EcartReelPrediction1[[modeles1[i]]]
     erreur2 <- EcartReelPrediction1[[modeles1[j]]]
     
-    # Vérifier si les erreurs sont identiques
+    # VÃ©rifier si les erreurs sont identiques
     if (var(erreur1 - erreur2) == 0) {
       dm_matrix1[i, j] <- NA
       dm_matrix1[j, i] <- NA
@@ -906,7 +906,7 @@ for (i in 1:(length(modeles1) - 1)) {
 
 
 
-#DM TEST période 2
+#DM TEST pÃ©riode 2
 modeles2 <- colnames(EcartReelPrediction2)
 
 # Initialisation de la matrice des p-values du test Diebold-Mariano
@@ -914,14 +914,14 @@ dm_matrix2 <- matrix(NA, nrow = length(modeles2), ncol = length(modeles2))
 rownames(dm_matrix2) <- modeles2
 colnames(dm_matrix2) <- modeles2
 
-# Boucles pour comparer chaque modèle avec les autres
+# Boucles pour comparer chaque modÃ¨le avec les autres
 for (i in 1:(length(modeles2) - 1)) {
   for (j in (i + 1):length(modeles2)) {
-    # les erreurs de chaque modèle
+    # les erreurs de chaque modÃ¨le
     erreur1 <- EcartReelPrediction2[[modeles2[i]]]
     erreur2 <- EcartReelPrediction2[[modeles2[j]]]
     
-    # Vérifier si les erreurs sont identiques
+    # VÃ©rifier si les erreurs sont identiques
     if (var(erreur1 - erreur2) == 0) {
       dm_matrix2[i, j] <- NA
       dm_matrix2[j, i] <- NA
@@ -950,11 +950,11 @@ library(DescTools)
 models <- colnames(EcartReelPrediction2)
 n <- length(models)
 
-# Matrices de résultats
+# Matrices de rÃ©sultats
 wilcoxon_matrix <- matrix(NA, n, n, dimnames = list(models, models))
 levene_matrix <- matrix(NA, n, n, dimnames = list(models, models))
 
-# Boucles for pour comparer chaque modèle avec les autres
+# Boucles for pour comparer chaque modÃ¨le avec les autres
 for (i in 1:(n-1)) {
   for (j in (i+1):n) {
     model1 <- models[i]
@@ -963,7 +963,7 @@ for (i in 1:(n-1)) {
     # Test de Wilcoxon
     wilcox_test <- wilcox.test(EcartReelPrediction2[[model1]], EcartReelPrediction2[[model2]], paired = TRUE)
     wilcoxon_matrix[i, j] <- wilcox_test$p.value
-    wilcoxon_matrix[j, i] <- wilcox_test$p.value  # Symétrique
+    wilcoxon_matrix[j, i] <- wilcox_test$p.value  # SymÃ©trique
     
     # Test de Levene
     group <- factor(rep(c(model1, model2), each = nrow(EcartReelPrediction2)))
@@ -971,11 +971,11 @@ for (i in 1:(n-1)) {
     levene_test <- leveneTest(errors ~ group)
     
     levene_matrix[i, j] <- levene_test$`Pr(>F)`[1]
-    levene_matrix[j, i] <- levene_test$`Pr(>F)`[1]  # Symétrique
+    levene_matrix[j, i] <- levene_test$`Pr(>F)`[1]  # SymÃ©trique
   }
 }
 
-# Afficher les matrices de résultats
+# Afficher les matrices de rÃ©sultats
 print("Matrice des p-values du test de Wilcoxon:")
 print(wilcoxon_matrix)
 
